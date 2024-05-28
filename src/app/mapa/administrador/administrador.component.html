@@ -1,0 +1,13 @@
+<h1>Gestión de asociados desde mapa</h1>
+<div class="content">
+    <div class="map-container">
+        <div id="map"></div>
+    </div>
+    <div class="filter-container">
+        <label for="veredaSelect">Filtrar por vereda:</label>
+        <select id="veredaSelect" [(ngModel)]="selectedVereda" (change)="filterMarkers()">
+            <option value="">Todas</option>
+            <option *ngFor="let vereda of veredas" [value]="vereda">{{ vereda }}</option>
+        </select>
+    </div>
+</div>
