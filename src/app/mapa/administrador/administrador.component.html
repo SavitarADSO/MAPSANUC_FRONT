@@ -1,13 +1,33 @@
 <h1>Gestión de asociados desde mapa</h1>
 <div class="content">
-    <div class="map-container">
-        <div id="map"></div>
-    </div>
-    <div class="filter-container">
-        <label for="veredaSelect">Filtrar por vereda:</label>
-        <select id="veredaSelect" [(ngModel)]="selectedVereda" (change)="filterMarkers()">
-            <option value="">Todas</option>
-            <option *ngFor="let vereda of veredas" [value]="vereda">{{ vereda }}</option>
-        </select>
-    </div>
+  <div class="map-container">
+    <div id="map"></div>
+  </div>
+  <div class="filter-container">
+    <label for="veredaSelect">Filtrar por vereda:</label>
+    <select id="veredaSelect" [(ngModel)]="selectedVereda" (change)="filterMarkers()">
+      <option value="">Todas</option>
+      <option *ngFor="let vereda of veredas" [value]="vereda">{{ vereda }}</option>
+    </select>
+    
+    <label for="tipoFincaSelect">Filtrar por tipo de finca:</label>
+    <select id="tipoFincaSelect" [(ngModel)]="selectedTipoFinca" (change)="filterMarkers()">
+      <option value="">Todos</option>
+      <option *ngFor="let tipo of tiposFinca" [value]="tipo">{{ tipo }}</option>
+    </select>
+    
+    <label for="categoriaSelect">Filtrar por categoría de producción:</label>
+    <select id="categoriaSelect" [(ngModel)]="selectedCategoria" (change)="filterMarkers()">
+      <option value="">Todas</option>
+      <option *ngFor="let categoria of categorias" [value]="categoria">{{ categoria }}</option>
+    </select>
+    
+    <label for="productoSelect">Filtrar por productos:</label>
+    <select id="productoSelect" [(ngModel)]="selectedProducto" (change)="filterMarkers()">
+      <option value="">Todos</option>
+      <option *ngFor="let producto of productos" [value]="producto">{{ producto }}</option>
+    </select>
+    
+    
+  </div>
 </div>

@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { UbicacionService } from '../../services/ubicacion.service';
 import { Ubicacion } from '../../models/ubicacion.model';
 import { HttpClientModule } from '@angular/common/http';
-import { Map, Icon, tileLayer, marker } from 'leaflet';
+import { Map, Icon, tileLayer, marker, polygon, LatLngExpression } from 'leaflet';
 
 @Component({
   selector: 'app-administrador',
@@ -18,13 +18,22 @@ export class AdministradorComponent implements AfterViewInit {
   private map: Map | undefined;
   private markers: any[] = [];
   public veredas: string[] = [];
+  public tiposFinca: string[] = [];
+  public categorias: string[] = [];
+  public productos: string[] = [];
+  public hectareas: number[] = [];
   public selectedVereda: string = '';
+  public selectedTipoFinca: string = '';
+  public selectedCategoria: string = '';
+  public selectedProducto: string = '';
+  public selectedHectarea: number | null = null;
 
   constructor(private elementRef: ElementRef, private ubicacionService: UbicacionService) {}
 
   ngAfterViewInit(): void {
     this.initializeMap().then(() => {
       this.loadUbicaciones();
+      this.addVeredas(); // Agrega los polígonos de las veredas
     });
   }
 
@@ -46,10 +55,18 @@ export class AdministradorComponent implements AfterViewInit {
         .addTo(this.map!)
         .bindPopup(`
           <div style="text-align: center;">
-            <h3>ASOCIACIÓN MUNICIPAL DE USUARIOS CAMPESINOS DE FLORIDABLANCA ANUC</h3>
-            <img src="assets/img/logo_anuc.png" alt="Logo ANUC" style="width: 100px; height: auto; margin-bottom: 10px;">
-            <p>NIT: 890211458-4</p>
-            <p>Dirección: CR 9 6 16 CASCO URBANO FLORIDABLANCA</p>
+            <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 10px;">
+              <img src="assets/img/logo_anuc.png" alt="Logo ANUC" style="width: 100px; height: auto; margin-right: 10px;">
+              <h3 style="margin: 0;">ASOCIACIÓN MUNICIPAL DE USUARIOS CAMPESINOS DE FLORIDABLANCA ANUC</h3>
+            </div>
+            <p><strong>Dirección:</strong> CR 9 6 16 CASCO URBANO FLORIDABLANCA</p>
+            <p><strong>Horarios de venta:</strong></p>
+            <ul style="list-style: none; padding: 0;">
+              <li>Martes: 8:00 am - 4:00 pm</li>
+              <li>Jueves: 8:00 am - 4:00 pm</li>
+              <li>Sábado: 8:00 am - 4:00 pm</li>
+              <li>Domingo: 8:00 am - 4:00 pm</li>
+            </ul>
             <img src="assets/img/fachada_anuc.PNG" alt="Fachada ANUC" style="width: 200px; height: auto; margin-top: 10px;">
           </div>
         `);
@@ -77,13 +94,46 @@ export class AdministradorComponent implements AfterViewInit {
           const lng = parseFloat(ubicacion.longitude);
 
           const markerItem = marker([lat, lng], { icon: fincaIcon })
-            .bindPopup(`Finca: ${ubicacion.nombre_finca}<br>Vereda: ${ubicacion.vereda}<br>Nombre: ${ubicacion.nombre}`)
+            .bindPopup(`
+              <div>
+                <p><strong>Finca:</strong> ${ubicacion.nombre_finca}</p>
+                <p><strong>Vereda:</strong> ${ubicacion.vereda}</p>
+                <p><strong>Nombre:</strong> ${ubicacion.nombre}</p>
+                <p><strong>Tipo de Finca:</strong> ${ubicacion.tipo_finca}</p>
+                <p><strong>Hectáreas:</strong> ${ubicacion.hectareas}</p>
+                <p><strong>Producción:</strong></p>
+                <ul>
+                  ${ubicacion.producciones?.map(prod => `<li>${prod.categorias}: ${prod.productos}</li>`).join('')}
+                </ul>
+              </div>
+            `)
             .addTo(this.map!);
 
-          this.markers.push({ marker: markerItem, vereda: ubicacion.vereda });
+          this.markers.push({
+            marker: markerItem,
+            vereda: ubicacion.vereda,
+            tipoFinca: ubicacion.tipo_finca,
+            categoria: ubicacion.producciones?.map(prod => prod.categorias).join(', ') || '',
+            producto: ubicacion.producciones?.map(prod => prod.productos).join(', ') || '',
+            hectareas: ubicacion.hectareas || 0
+          });
 
           if (ubicacion.vereda && !this.veredas.includes(ubicacion.vereda)) {
             this.veredas.push(ubicacion.vereda);
+          }
+          if (ubicacion.tipo_finca && !this.tiposFinca.includes(ubicacion.tipo_finca)) {
+            this.tiposFinca.push(ubicacion.tipo_finca);
+          }
+          ubicacion.producciones?.forEach(prod => {
+            if (prod.categorias && !this.categorias.includes(prod.categorias)) {
+              this.categorias.push(prod.categorias);
+            }
+            if (prod.productos && !this.productos.includes(prod.productos)) {
+              this.productos.push(prod.productos);
+            }
+          });
+          if (ubicacion.hectareas && !this.hectareas.includes(ubicacion.hectareas)) {
+            this.hectareas.push(ubicacion.hectareas);
           }
         }
       });
@@ -92,11 +142,47 @@ export class AdministradorComponent implements AfterViewInit {
 
   public filterMarkers(): void {
     this.markers.forEach(item => {
-      if (this.selectedVereda === '' || item.vereda === this.selectedVereda) {
+      const showByVereda = this.selectedVereda === '' || item.vereda === this.selectedVereda;
+      const showByTipoFinca = this.selectedTipoFinca === '' || item.tipoFinca === this.selectedTipoFinca;
+      const showByCategoria = this.selectedCategoria === '' || item.categoria.includes(this.selectedCategoria);
+      const showByProducto = this.selectedProducto === '' || item.producto.includes(this.selectedProducto);
+      const showByHectareas = this.selectedHectarea === null || item.hectareas === this.selectedHectarea;
+
+      if (showByVereda && showByTipoFinca && showByCategoria && showByProducto && showByHectareas) {
         item.marker.addTo(this.map!);
       } else {
         this.map!.removeLayer(item.marker);
       }
+    });
+  }
+
+  private addVeredas(): void {
+    const veredas = [
+      {
+        name: "Vereda 1",
+        coordinates: [
+          [7.067, -73.085],
+          [7.068, -73.083],
+          [7.065, -73.082],
+          [7.064, -73.084],
+        ] as LatLngExpression[],
+        color: "red",
+      },
+      {
+        name: "Vereda 2",
+        coordinates: [
+          [7.070, -73.089],
+          [7.072, -73.087],
+          [7.069, -73.086],
+          [7.068, -73.088],
+          [7.067, -73.089],
+        ] as LatLngExpression[],
+        color: "blue",
+      },
+    ];
+
+    veredas.forEach((vereda) => {
+      polygon(vereda.coordinates, { color: vereda.color }).addTo(this.map!).bindPopup(vereda.name);
     });
   }
 }

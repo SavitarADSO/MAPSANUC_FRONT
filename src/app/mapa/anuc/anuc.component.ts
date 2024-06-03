@@ -29,14 +29,22 @@ export class AnucComponent implements AfterViewInit {
 
     // Contenido del popup con imágenes y texto
     const popupContent = `
-      <div style="text-align: center;">
-        <h3>ASOCIACIÓN MUNICIPAL DE USUARIOS CAMPESINOS DE FLORIDABLANCA ANUC</h3>
-        <img src="assets/img/logo_anuc.png" alt="Logo ANUC" style="width: 100px; height: auto; margin-bottom: 10px;">
-        <p>NIT: 890211458-4</p>
-        <p>Dirección: CR 9 6 16 CASCO URBANO FLORIDABLANCA</p>
-        <img src="assets/img/fachada_anuc.PNG" alt="Fachada ANUC" style="width: 200px; height: auto; margin-top: 10px;">
+    <div style="text-align: center;">
+      <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 10px;">
+        <img src="assets/img/logo_anuc.png" alt="Logo ANUC" style="width: 100px; height: auto; margin-right: 10px;">
+        <h3 style="margin: 0;">ASOCIACIÓN MUNICIPAL DE USUARIOS CAMPESINOS DE FLORIDABLANCA ANUC</h3>
       </div>
-    `;
+      <p><strong>Dirección:</strong> CR 9 6 16 CASCO URBANO FLORIDABLANCA</p>
+      <p><strong>Horarios de venta:</strong></p>
+      <ul style="list-style: none; padding: 0;">
+        <li>Martes: 8:00 am - 4:00 pm</li>
+        <li>Jueves: 8:00 am - 4:00 pm</li>
+        <li>Sábado: 8:00 am - 4:00 pm</li>
+        <li>Domingo: 8:00 am - 4:00 pm</li>
+      </ul>
+      <img src="assets/img/fachada_anuc.PNG" alt="Fachada ANUC" style="width: 200px; height: auto; margin-top: 10px;">
+    </div>
+  `;
 
     // Crear el marcador con el icono personalizado y el contenido del popup
     const markerItem = marker([7.062166379405107, -73.08538016671284], { icon: customIcon })

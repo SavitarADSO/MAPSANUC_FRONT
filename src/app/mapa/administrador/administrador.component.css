@@ -5,42 +5,68 @@ body {
     flex-direction: column;
     height: 100vh;
     margin: 0;
+    background-color: #f0f0f0;
 }
 
 h1 {
-    text-align: center;
-    color: blueviolet;
     font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+    color: #4a148c;
+    margin: 20px 0;
 }
 
 .content {
     display: flex;
     justify-content: center;
-    align-items: flex-start;
+    align-items: center;
     width: 100%;
+    max-width: 1200px;
+    margin-left: 20%;
 }
 
 .map-container {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex: 1;
 }
 
 #map {
     height: 800px;
-    width: 1000px;
+    width: 100%;
+    max-width: 1000px;
+    border: 2px solid #ccc;
+    border-radius: 10px;
 }
 
 .filter-container {
-    text-align: center;
     margin: 20px;
-    margin-left: 20px;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
-#veredaSelect {
-    padding: 5px;
+label {
     font-size: 16px;
+    color: #333;
+    margin: 10px 0 5px;
+}
+
+select {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+    transition: all 0.3s ease;
+}
+
+select:focus {
+    border-color: #4a148c;
+    box-shadow: 0 0 5px rgba(74, 20, 140, 0.5);
+    outline: none;
 }
