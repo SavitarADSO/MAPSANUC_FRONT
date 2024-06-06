@@ -21,6 +21,9 @@ h1 {
 }
 
 #map {
-    height: 600px;
-    width: 1000px;
+    height: 800px;
+    width: 100%;
+    max-width: 1000px;
+    border: 2px solid #ccc;
+    border-radius: 10px;
 }

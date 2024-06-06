@@ -17,10 +17,27 @@ h1 {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100%;
+    flex: 1;
 }
 
 #map {
     height: 800px;
-    width: 1000px;
+    width: 100%;
+    max-width: 1000px;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    /* Agregamos un margen inferior al mapa */
+}
+
+#navigate-button {
+    margin-left: 2%;
+    background-color: #ffffff;
+    color: #000000;
+    border: 1px solid #ccc;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
